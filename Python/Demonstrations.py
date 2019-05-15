@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed May 15 17:12:32 2019
+Created on Wed May 15 19:56:18 2019
 
 @author: Craig Chisholm
 """
-
-#Script for plotting radial wavefunctions
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,7 +15,7 @@ plt.close("all")
 
 #Input information
 atom = '87Rb'
-nn = 5
+nn = 50
 ll = 0
 jj = 0.5
 
@@ -51,3 +49,15 @@ plt.xlabel('$(r/a_0)^{1/2}$')
 plt.ylabel('$|r^{1/2}R(r)|.^2\, (a_0^{-1})$')
 plt.title(tString)
 plt.show()
+
+#Compare groundstate to self-consistent field method
+plotscale2, sqrtrR = np.loadtxt('Data/SCFcalc.txt', unpack=True)
+normY_solg, rrg = Rydberg.numerovfunc('87Rb',5,0,0.5)
+
+plt.figure()
+plt.scatter(plotscale2,sqrtrR,label='Callaway')
+plt.plot(np.sqrt(rrg),np.multiply(normY_solg,-1),label='Numerov')
+plt.xlabel('$(r/a_0)^{1/2}$')
+plt.ylabel('$r^{1/2}R(r)\, (a_0^{-1})$')
+plt.legend()
+plt.title('Rubidium Groundstate Radial Wavefunction')

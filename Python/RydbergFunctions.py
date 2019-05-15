@@ -73,9 +73,7 @@ def numerovfunc(atom,nn,ll,jj):
     
     filename = filenamemake(atom,nn,ll,jj)
     
-    f = open(filename,"w")
-    f.write('# rr normY_sol\n')
-    np.savetxt(f, np.array([rr, normY_sol]).T)
+    np.savetxt(filename, np.array([rr, normY_sol]).T,header='rr normY_sol')
     
     return normY_sol, rr
 
