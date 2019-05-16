@@ -20,8 +20,7 @@ ll = 0
 jj = 0.5
 
 #Get some constants (by adding more files with different data this code can be made to work for different atoms)
-if (atom=='87Rb'):
-    from Rb87Numbers import alpha_c
+alpha_c = Rydberg.GetAtomParams(atom,nn,ll,jj)[3]
 
 #Calculate wave function
 normY_sol, rr = Rydberg.numerovfunc(atom,nn,ll,jj)

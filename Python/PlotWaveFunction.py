@@ -11,7 +11,6 @@ Created on Wed May 15 17:12:32 2019
 import matplotlib.pyplot as plt
 import numpy as np
 import RydbergFunctions as Rydberg
-from SIunits import *
 
 plt.close("all")
 
@@ -22,8 +21,7 @@ ll = 0
 jj = 0.5
 
 #Get some constants (by adding more files with different data this code can be made to work for different atoms)
-if (atom=='87Rb'):
-    from Rb87Numbers import alpha_c
+alpha_c = Rydberg.GetAtomParams(atom,nn,ll,jj)[3]
 
 #Calculate wave function
 normY_sol, rr = Rydberg.numerovfunc(atom,nn,ll,jj)
