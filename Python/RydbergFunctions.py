@@ -13,7 +13,7 @@ from SIunits import *
 
 def numerovfunc(atom,nn,ll,jj):
     '''Function for getting solution to the radial Schrodinger equation using Numerov algorithm'''
-    ZZ, spin, eneigval, alpha_c, a_1, a_2, a_3, a_4, r_c = GetAtomParams(atom,nn,ll,jj)
+    ZZ, spin, eneigval, alpha_c, a_1, a_2, a_3, a_4, r_c, ionlim, delta_nlj = GetAtomParams(atom,nn,ll,jj)
     
     hh = 0.01 #Choose this to be small so that O(h**6) may be ignored
     h2 = hh**2 #For efficiecy
@@ -77,10 +77,90 @@ def numerovfunc(atom,nn,ll,jj):
     
     return normY_sol, rr
 
+def Radiative_Lifetimes(atom,nn,ll,jj):
+    '''Function for calculating Rydberg state lifetimes'''
+    temp = 300 #Approximation of room temperature in K
+    
+    ZZ, spin, eneigval, alpha_c, a_1, a_2, a_3, a_4, r_c, ionlim, delta_nlj = GetAtomParams(atom,nn,ll,jj)
+    if (atom=='87Rb'):
+        loadparam, stateenvec, Rdecayratevec, qvec1, qvec4 = Rb87decaypaths(nn,ll,jj)
+    
+    for qq in range(qvec1,qvec4+1):
+        #Get matrix element
+        matrixelementSI = matrix_elements(atom,nn,ll,jj,loadparam[qq,0],loadparam[qq,1],loadparam[qq,2])[1]
+        #Compute energies
+        enlow = stateenvec[qq]-ionlim #Energy of lower state in eV
+        eneigvaleV = eneigval*atomenergy #Energy of state |n,l,j> in eV
+        
+        #Perform calculation
+        omega = np.absolute((eneigvaleV-enlow)/rpceV) #Angular frequency of transimission
+        term1 = (omega**3)/(3*np.pi*vacpmtvty*rpcJ*(lightc**3)) #splitting terms to make reading easier
+        term2 = (2*jj+1)/(2*loadparam[qq,2]+1)
+        Rdecayratevec[qq] = term1*term2*(matrixelementSI**2) #Radiative decay rate
+        
+    Rdecayrate = Rdecayratevec.sum()
+    
+    #Account for black body radiation Beterov et al. (2009)
+    
+    neff = nn - delta_nlj #Effective principal quantum number
+    
+    if (atom=='87Rb'):
+        BBdecayrate = Rb87blackbody(neff,temp,ll,jj)
+    
+    decayrate = Rdecayrate + BBdecayrate #Total decay rate
+    lifetime = 1/decayrate
+    
+    return lifetime
+
+def matrix_elements(atom,nn1,ll1,jj1,nn2,ll2,jj2):
+    '''Function for calculating dipole matrix elements based on results from numerovfunc()'''
+    matrixelement = radiel(atom,nn1,ll1,jj1,nn2,ll2,jj2)
+    matrixelementSI = matrixelement*bohrrad*eleccharge
+    
+    return matrixelement, matrixelementSI
+
+def radiel(atom,nn1,ll1,jj1,nn2,ll2,jj2):
+    '''function to evaluate radial matrix elements'''
+    #first load radial wavefunctions for calculating the radial part of the matrix element
+    try:
+        rscale1, radial1 = np.loadtxt(filenamemake(atom,nn1,ll1,jj1), unpack=True)
+    except FileNotFoundError:
+        radial1, rscale1 = numerovfunc(atom,nn1,ll1,jj1)
+    
+    try:
+        rscale2, radial2 = np.loadtxt(filenamemake(atom,nn2,ll2,jj2), unpack=True)
+    except FileNotFoundError:
+        radial2, rscale2 = numerovfunc(atom,nn2,ll2,jj2)
+    
+    #Calculate the radial matrix element
+    if (nn1 >= nn2):
+        Yk1 = radial1
+        Yk2 = radial2
+        rscale = rscale1
+    else:
+        Yk1 = radial2
+        Yk2 = radial1
+        rscale = rscale2
+    
+    #Resize smaller solution vector by attaching zeros to the end such that the two solution vectors are the same length
+    if not(len(Yk1.tolist())==len(Yk2.tolist())):
+        szero = np.zeros(len(Yk1.tolist())-len(Yk2.tolist())).tolist()
+        Yk2conc = np.array(Yk2.tolist()+szero)
+    else:
+        Yk2conc = np.copy(Yk2)
+    
+    #Solve the matrix elements using method adapted from Zimmerman et al. (1979)
+    
+    deltar = np.subtract(rscale[1:(len(rscale.tolist())-1)],rscale[0:(len(rscale.tolist())-2)])
+    numervec = np.multiply(Yk1[1:(len(Yk1.tolist())-1)],np.multiply(Yk2conc[1:(len(Yk2conc.tolist())-1)],np.multiply(np.power(rscale[1:(len(rscale.tolist())-1)],2),deltar)))
+    matrixelement = numervec.sum()
+    
+    return matrixelement
+
 def GetAtomParams(atom,nn,ll,jj):
     if (atom=='87Rb'):
-        ZZ, spin, eneigval, alpha_c, a_1, a_2, a_3, a_4, r_c = Rb87Numbers(nn,ll,jj)
-    return ZZ, spin, eneigval, alpha_c, a_1, a_2, a_3, a_4, r_c
+        ZZ, spin, eneigval, alpha_c, a_1, a_2, a_3, a_4, r_c, ionlim, delta_nlj = Rb87Numbers(nn,ll,jj)
+    return ZZ, spin, eneigval, alpha_c, a_1, a_2, a_3, a_4, r_c, ionlim, delta_nlj
 
 def filenamemake(atom,nn,ll,jj):
     '''Function for constructing filenames'''
@@ -180,4 +260,71 @@ def Rb87Numbers(nn,ll,jj):
     else:
        eneigval = -Ry/(2*((nn-delta_nlj)**2))
        
-    return ZZ, spin, eneigval, alpha_c, a_1, a_2, a_3, a_4, r_c
+    return ZZ, spin, eneigval, alpha_c, a_1, a_2, a_3, a_4, r_c, ionlim, delta_nlj
+
+def Rb87decaypaths(nn,ll,jj):
+    '''Radiative decay pathways for 87Rb'''
+    loadparam = np.array([[5,1,0.5],[5,1,1.5],[6,1,1.5],[6,1,0.5],[5,0,0.5],[4,2,1.5],[6,0,0.5],[4,2,2.5]]) #Values to load based on allowed decay pathways
+    
+    D1trans = 1.56051536 #D1 line transition energy in eV
+    D2trans = 1.58999085 #D2 line transition energy in eV
+    n4l2j5_2en = 2.40116159
+    n4l2j3_2en = 2.40121692
+    n6l0j1_2en = 2.49759249
+    n6l1j1_2en = 2.94203794
+    n6l1j3_2en = 2.95165365
+    n5l0j1_2en = 0 #5S_{1/2} energy in eV
+    
+    stateenvec = np.array([D1trans, D2trans, n6l1j3_2en, n6l1j1_2en, n5l0j1_2en,    n4l2j3_2en, n6l0j1_2en, n4l2j5_2en]) #Energy levels
+    Rdecayratevec = np.zeros(8) #Create a vector to store decay rates in
+    
+    if ((ll==0) or ((ll==2) and (jj==1.5))):
+        qvec1 = 0
+        qvec4 = 3
+    elif ((ll==1) and (jj==1.5)):
+        qvec1 = 4
+        qvec4 = 7
+    elif ((ll==1) and (jj==0.5)):
+        qvec1 = 4
+        qvec4 = 6
+    elif ((ll==2) and (jj==2.5)):
+        qvec1 = 1
+        qvec4 = 2
+    
+    return loadparam, stateenvec, Rdecayratevec, qvec1, qvec4
+
+def Rb87blackbody(neff,temp,ll,jj):
+    '''Function for calculating black body decay rate for 87Rb Rydberg states'''
+    
+    #Numbers from Beterov et a;. (2009)
+    if (ll==0):
+        AA = 0.134
+        BB = 0.251
+        CC = 2.567
+        DD = 4.426
+    elif ((ll==1) and (jj==0.5)):
+        AA = 0.053
+        BB = 0.128
+        CC = 2.183
+        DD = 3.989
+    elif ((ll==1) and (jj==1.5)):
+        AA = 0.046
+        BB = 0.109
+        CC = 2.085
+        DD = 3.901
+    elif ((ll==2) and (jj==1.5)):
+        AA = 0.033
+        BB = 0.084
+        CC = 1.912
+        DD = 3.716
+    elif ((ll==2) and (jj==2.5)):
+        AA = 0.032
+        BB = 0.082
+        CC = 1.898
+        DD = 3.703
+    
+    term3 = AA/(neff**DD)
+    term4 = 2.14e10/(np.exp(315780*BB/((neff**CC)*temp))-1)
+    BBdecayrate = term3*term4
+    
+    return BBdecayrate

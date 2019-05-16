@@ -71,7 +71,7 @@ nns = np.arange(28,46,1)
 calcs = np.zeros(np.shape(nns))
 itr = 0
 while (itr<len(nns.tolist())):
-    calcs[itr] + Rydberg.Radiative_Lifetimes(atom,nns[itr],0,0.5)*1e6
+    calcs[itr] = Rydberg.Radiative_Lifetimes(atom,nns[itr],0,0.5)*1e6
     itr+=1
 
 #P_3/2
@@ -79,7 +79,7 @@ nnp = np.arange(34,45,1)
 calcp = np.zeros(np.shape(nnp))
 itr = 0
 while (itr<len(nnp.tolist())):
-    calcp[itr] + Rydberg.Radiative_Lifetimes(atom,nnp[itr],1,1.5)*1e6
+    calcp[itr] = Rydberg.Radiative_Lifetimes(atom,nnp[itr],1,1.5)*1e6
     itr+=1
 
 #D_5/2
@@ -87,11 +87,11 @@ nnd = np.arange(29,45,1)
 calcd = np.zeros(np.shape(nnd))
 itr = 0
 while (itr<len(nnd.tolist())):
-    calcd[itr] + Rydberg.Radiative_Lifetimes(atom,nnd[itr],2,2.5)*1e6
+    calcd[itr] = Rydberg.Radiative_Lifetimes(atom,nnd[itr],2,2.5)*1e6
     itr+=1
 
 plt.figure()
-plt.scatter(nns,calcs,fmt='x',label='Calculated')
+plt.scatter(nns,calcs,marker='x',label='Calculated')
 plt.errorbar(nns,sexpt,yerr=sexpterr,fmt='o',label='Experimental')
 plt.title('Plot of calculated and experimental lifetimes for nS_{1/2} states')
 plt.ylabel('$\tau\, (\mu\mathrm{s})$')
@@ -100,7 +100,7 @@ plt.legend()
 plt.show()
 
 plt.figure()
-plt.scatter(nnp,calcp,fmt='x',label='Calculated')
+plt.scatter(nnp,calcp,marker='x',label='Calculated')
 plt.errorbar(nnp,pexpt,yerr=pexpterr,fmt='o',label='Experimental')
 plt.title('Plot of calculated and experimental lifetimes for nP_{3/2} states')
 plt.ylabel('$\tau\, (\mu\mathrm{s})$')
@@ -109,7 +109,7 @@ plt.legend()
 plt.show()
 
 plt.figure()
-plt.scatter(nnd,calcd,fmt='x',label='Calculated')
+plt.scatter(nnd,calcd,marker='x',label='Calculated')
 plt.errorbar(nnd,dexpt,yerr=dexpterr,fmt='o',label='Experimental')
 plt.title('Plot of calculated and experimental lifetimes for nD_{5/2} states')
 plt.ylabel('$\tau\, (\mu\mathrm{s})$')
