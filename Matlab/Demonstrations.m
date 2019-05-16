@@ -43,7 +43,7 @@ if nn > 20
     xlim([alpha_c^(1/3),max(rr)]);
 end
 xlabel('$r/a_0$','interpreter','latex');
-ylabel('$|r^{1/2}R(r)|.^2\, (a_0^{-1})$','interpreter','latex');
+ylabel('$|rR(r)|.^2\, (a_0^{-1})$','interpreter','latex');
 title([atom,' radial wavefunction |n,l,j\rangle = |',num2str(nn),',',...
     num2str(ll),',',num2str(jj),'\rangle']);
 set(gcf,'Color','w');

@@ -41,11 +41,11 @@ plt.title(tString)
 plt.show()
 
 plt.figure()
-plt.plot(plotscale,probamp)
+plt.plot(rr,probamp)
 if (nn>20):
-    plt.xlim([alpha_c**(1/3),plotscale.max()])
-plt.xlabel('$(r/a_0)^{1/2}$')
-plt.ylabel('$|r^{1/2}R(r)|.^2\, (a_0^{-1})$')
+    plt.xlim([alpha_c**(1/3),rr.max()])
+plt.xlabel('$r/a_0$')
+plt.ylabel('$|rR(r)|.^2\, (a_0^{-1})$')
 plt.title(tString)
 plt.show()
 

@@ -41,7 +41,7 @@ else
   plot(rr,probamp,linewidth=2)
 end
 plot!(xlabel=L"r/a_0")
-plot!(ylabel=L"|r^{1/2}R(r)|^2 \,(a_0^{-1})")
+plot!(ylabel=L"|rR(r)|^2 \,(a_0^{-1})")
 plot!(title=string(atom," radial probability density |n,l,j⟩ = |",string(nn),",",string(ll),",",string(jj),"⟩"))
 plot!(leg=false)
 gui()
