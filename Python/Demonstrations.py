@@ -18,6 +18,7 @@ atom = '87Rb'
 nn = 50
 ll = 0
 jj = 0.5
+mj = 0.5
 
 #Get some constants (by adding more files with different data this code can be made to work for different atoms)
 alpha_c = Rydberg.GetAtomParams(atom,nn,ll,jj)[3]
@@ -118,3 +119,5 @@ plt.legend()
 plt.show()
 
 #Blockade shift
+
+RRSI, theta, blockadeshiftGHzmesh, C_6val = Rydberg.BlockadeShift(atom,nn,ll,jj,mj)

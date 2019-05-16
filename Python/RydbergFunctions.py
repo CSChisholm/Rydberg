@@ -11,6 +11,7 @@ Created on Wed May 15 17:19:48 2019
 import numpy as np
 from SIunits import *
 import AtomData as atoms
+import MatlabHacks as mfuncs
 
 def numerovfunc(atom,nn,ll,jj):
     '''Function for getting solution to the radial Schrodinger equation using Numerov algorithm'''
@@ -112,6 +113,32 @@ def Radiative_Lifetimes(atom,nn,ll,jj):
     lifetime = 1/decayrate
     
     return lifetime
+
+def BlockadeShift(atom,nn,ll,jj,mj):
+    '''Function for calculating Rydberg blockade shifts.'''
+    
+    pceV = 2*np.pi*rpceV #Planck's constant in eV
+    
+    if (atom=='87Rb'):
+        ZZ, spin, eneigval, alpha_c, a_1, a_2, a_3, a_4, r_c, ionlim, delta_nlj = GetAtomParams(atom,nn,ll,jj)
+    
+    #Create ranges for theta and R (R in atomic units)
+    theta = np.arange(0,np.pi/2+0.005,0.01)
+    RRSI = np.multiply(np.arange(4,10.0005,0.001),1e-6)
+    RR + np.divide(RRSI,bohrrad)
+    
+    #Set defect threshold
+    defectmax = 100e9 #Maximum energy defect in Hz
+    entol = defectmax*pceV/atomeenergy #Converted to atomic units
+    ntol = 4 #Maximum change in n
+    
+    #Determine the single particle state energy
+    singen = eneigval
+    
+    #Create set of allowable interacting state quantum numbers
+    
+    
+    return RRSI, theta, blockadeshiftGHzmesh, C_6val
 
 def matrix_elements(atom,nn1,ll1,jj1,nn2,ll2,jj2):
     '''Function for calculating dipole matrix elements based on results from numerovfunc()'''
