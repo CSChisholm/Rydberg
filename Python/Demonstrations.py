@@ -60,3 +60,61 @@ plt.xlabel('$(r/a_0)^{1/2}$')
 plt.ylabel('$r^{1/2}R(r)\, (a_0^{-1})$')
 plt.legend()
 plt.title('Rubidium Groundstate Radial Wavefunction')
+
+#Lifetimes
+sexpt, sexpterr = np.loadtxt('Data/LifetimesS.txt', unpack=True)
+pexpt, pexpterr = np.loadtxt('Data/LifetimesP.txt', unpack=True)
+dexpt, dexpterr = np.loadtxt('Data/LifetimesD.txt', unpack=True)
+
+#S_1/2
+nns = np.arange(28,46,1)
+calcs = np.zeros(np.shape(nns))
+itr = 0
+while (itr<len(nns.tolist())):
+    calcs[itr] + Rydberg.Radiative_Lifetimes(atom,nns[itr],0,0.5)*1e6
+    itr+=1
+
+#P_3/2
+nnp = np.arange(34,45,1)
+calcp = np.zeros(np.shape(nnp))
+itr = 0
+while (itr<len(nnp.tolist())):
+    calcp[itr] + Rydberg.Radiative_Lifetimes(atom,nnp[itr],1,1.5)*1e6
+    itr+=1
+
+#D_5/2
+nnd = np.arange(29,45,1)
+calcd = np.zeros(np.shape(nnd))
+itr = 0
+while (itr<len(nnd.tolist())):
+    calcd[itr] + Rydberg.Radiative_Lifetimes(atom,nnd[itr],2,2.5)*1e6
+    itr+=1
+
+plt.figure()
+plt.scatter(nns,calcs,fmt='x',label='Calculated')
+plt.errorbar(nns,sexpt,yerr=sexpterr,fmt='o',label='Experimental')
+plt.title('Plot of calculated and experimental lifetimes for nS_{1/2} states')
+plt.ylabel('$\tau\, (\mu\mathrm{s})$')
+plt.xlabel('$n$')
+plt.legend()
+plt.show()
+
+plt.figure()
+plt.scatter(nnp,calcp,fmt='x',label='Calculated')
+plt.errorbar(nnp,pexpt,yerr=pexpterr,fmt='o',label='Experimental')
+plt.title('Plot of calculated and experimental lifetimes for nP_{3/2} states')
+plt.ylabel('$\tau\, (\mu\mathrm{s})$')
+plt.xlabel('$n$')
+plt.legend()
+plt.show()
+
+plt.figure()
+plt.scatter(nnd,calcd,fmt='x',label='Calculated')
+plt.errorbar(nnd,dexpt,yerr=dexpterr,fmt='o',label='Experimental')
+plt.title('Plot of calculated and experimental lifetimes for nD_{5/2} states')
+plt.ylabel('$\tau\, (\mu\mathrm{s})$')
+plt.xlabel('$n$')
+plt.legend()
+plt.show()
+
+#Blockade shift
