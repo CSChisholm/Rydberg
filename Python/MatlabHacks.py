@@ -45,8 +45,8 @@ def combvec(*kargs):
             Mvec[kk] = sA[0]
             Nvec[kk] = sA[1]
         kk+=1
-    Nprod = Nvec.prod()
-    outmatrix = np.zeros(Mvec.sum(),Nprod)
+    Nprod = int(Nvec.prod())
+    outmatrix = np.zeros((int(Mvec.sum()),Nprod))
     Mstart = 0
     kk = 1
     for arg in kargs:

@@ -126,11 +126,11 @@ def BlockadeShift(atom,nn,ll,jj,mj):
     #Create ranges for theta and R (R in atomic units)
     theta = np.arange(0,np.pi/2+0.005,0.01)
     RRSI = np.multiply(np.arange(4,10.0005,0.001),1e-6)
-    RR + np.divide(RRSI,bohrrad)
+    RR = np.divide(RRSI,bohrrad)
     
     #Set defect threshold
     defectmax = 100e9 #Maximum energy defect in Hz
-    entol = defectmax*pceV/atomeenergy #Converted to atomic units
+    entol = defectmax*pceV/atomenergy #Converted to atomic units
     ntol = 4 #Maximum change in n
     
     #Determine the single particle state energy
@@ -146,7 +146,7 @@ def BlockadeShift(atom,nn,ll,jj,mj):
     else:
         smalllvec = mfuncs.rectpulse(lcands,2)
         jmaker = mfuncs.repmat(np.array([-0.5,0.5]),1,len(lcands.tolist()))
-    smalllvec = np.reshape(smalllvec,1,np.size(smalllvec))
+#    smalllvec = np.reshape(smalllvec,1,np.size(smalllvec))
     smalljvec = np.subtract(smalllvec,jmaker)
     lvec = mfuncs.repmat(smalllvec,1,int(len(nvec.tolist())/len(smalllvec.tolist())))
     jvec = mfuncs.repmat(smalljvec,1,int(len(nvec.tolist())/len(smalljvec.tolist())))

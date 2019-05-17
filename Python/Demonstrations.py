@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import RydbergFunctions as Rydberg
 from SIunits import *
+from fractions import Fraction
 
 plt.close("all")
 
@@ -30,7 +31,7 @@ normY_sol, rr = Rydberg.numerovfunc(atom,nn,ll,jj)
 plotscale = np.sqrt(rr)
 probamp = np.power(np.multiply(normY_sol,plotscale),2)
 
-tString = atom + ' radial wavefunction n = ' + str(nn) + ', l = ' + str(ll) + ', j = ' + str(jj)
+tString = atom + ' radial wavefunction |n,l,j> = |' + str(nn) + ',' + str(ll) + ',' + str(jj) + '>'
 
 plt.figure()
 plt.plot(plotscale,normY_sol)
@@ -94,8 +95,8 @@ while (itr<len(nnd.tolist())):
 plt.figure()
 plt.scatter(nns,calcs,marker='x',label='Calculated')
 plt.errorbar(nns,sexpt,yerr=sexpterr,fmt='o',label='Experimental')
-plt.title('Plot of calculated and experimental lifetimes for nS_{1/2} states')
-plt.ylabel('$\tau\, (\mu\mathrm{s})$')
+plt.title('Plot of calculated and experimental lifetimes for $nS_{1/2}$ states')
+plt.ylabel(r'$\tau\, (\mu\mathrm{s})$')
 plt.xlabel('$n$')
 plt.legend()
 plt.show()
@@ -103,8 +104,8 @@ plt.show()
 plt.figure()
 plt.scatter(nnp,calcp,marker='x',label='Calculated')
 plt.errorbar(nnp,pexpt,yerr=pexpterr,fmt='o',label='Experimental')
-plt.title('Plot of calculated and experimental lifetimes for nP_{3/2} states')
-plt.ylabel('$\tau\, (\mu\mathrm{s})$')
+plt.title('Plot of calculated and experimental lifetimes for $nP_{3/2}$ states')
+plt.ylabel(r'$\tau\, (\mu\mathrm{s})$')
 plt.xlabel('$n$')
 plt.legend()
 plt.show()
@@ -112,8 +113,8 @@ plt.show()
 plt.figure()
 plt.scatter(nnd,calcd,marker='x',label='Calculated')
 plt.errorbar(nnd,dexpt,yerr=dexpterr,fmt='o',label='Experimental')
-plt.title('Plot of calculated and experimental lifetimes for nD_{5/2} states')
-plt.ylabel('$\tau\, (\mu\mathrm{s})$')
+plt.title('Plot of calculated and experimental lifetimes for $nD_{5/2}$ states')
+plt.ylabel(r'$\tau\, (\mu\mathrm{s})$')
 plt.xlabel('$n$')
 plt.legend()
 plt.show()
@@ -121,3 +122,17 @@ plt.show()
 #Blockade shift
 
 RRSI, theta, blockadeshiftGHzmesh, C_6val = Rydberg.BlockadeShift(atom,nn,ll,jj,mj)
+
+stringlookup = 'SPD'
+ratJ = Fraction(jj)
+numer = ratJ.numerator
+denom = ratJ.denominator
+ratmJ = Fraction(mj)
+numer1 = ratmJ.numerator
+denom1 = ratmJ.denominator
+
+plt.figure()
+plt.pcolormesh(np.multiply(RRSI,1e6),theta,np.multiply(blockadeshiftGHzmesh,1e3))
+plt.xlabel('$R\, (\mu\mathrm{m})$')
+plt.ylabel('$\theta\, (\mathrm{radians})$')
+plt.title('Calculated Rydberg blockade shift for |' + str(nn) + stringlookup[ll] + '_{' + str(numer) + '/' + str(denom) + '}, m_j = ' + str(numer1) + '/' + str(denom1) + '> state of Rb')
