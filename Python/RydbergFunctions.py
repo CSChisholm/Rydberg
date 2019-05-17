@@ -12,6 +12,7 @@ import numpy as np
 from SIunits import *
 import AtomData as atoms
 import MatlabHacks as mfuncs
+import WignerFuncs as Wigner
 
 def numerovfunc(atom,nn,ll,jj):
     '''Function for getting solution to the radial Schrodinger equation using Numerov algorithm'''
@@ -257,9 +258,9 @@ def matrixel2p(atom,nni,lli,jji,mji,nn1,ll1,jj1,nn2,ll2,jj2,defect,theta):
     matelem2i = radiel(atom,nni,lli,jji,nn1,ll1,jj1)
     
     #Calculate terms in two particle matrix element using Wigner-Eckhart theorem (Pritchard, 2012), (Reinhard et al., 2007).
-    line1 = 0
-    line2 = 0
-    line3 = 0
+    line1 = np.add(np.add(np.multiply(angvec1[2],angvec2[2]),np.multiply(angvec1[0],angvec2[2])),np.multiply(np.multiply(angvec1[1],angvec2[1]),np.subtract(1,np.multiply(cos2t,3))))
+    line2 = np.multiply(np.add(np.add(np.multiply(angvec1[2],angvec2[2]),np.multiply(angvec1[2],angvec2[0])),np.add(np.multiply(angvec1[0],angvec2[2]),np.multiply(angvec1[0],angvec2[0]))),np.multiply(sin2t,-3/2))
+    line3 = np.multiply(np.add(np.add(np.multiply(angvec1[2],angvec2[1]),np.multiply(angvec1[0],angvec2[1])),np.add(np.multiply(angvec1[1],angvec2[2]),np.multiply(angvec1[1],angvec2[0]))),np.multiply(np.multiply(sint,cost),-3/np.sqrt(2)))
     
     matrixelement = np.multiply(np.multiply(matelem1i,matelem2i),np.add(line1,np.add(line2,line3)))
     
@@ -267,8 +268,19 @@ def matrixel2p(atom,nni,lli,jji,mji,nn1,ll1,jj1,nn2,ll2,jj2,defect,theta):
     
     return mel2p
 
-def angcalc():
-    return
+def angcalc(lli,jji,mji,ll1,jj1):
+    angvec1 = np.zeros(3)
+    for qq in range(-1,2):
+        mj1 = mji - qq
+        tf1 = (mj1==np.arange(-jj1,jj1+0.5)).sum()
+        if (tf1==1):
+            ang11 = (-1)**(jji-mji+espin+jj1+1)
+            ang12 = np.sqrt((2*jji+1)*(2*jj1+1)*(2*lli+1)*(2*ll1+1))
+            ang13 = Wigner.Wigner6j(jji,1,jj1,ll1,espin,lli)
+            ang14 = Wigner.Wigner3j(jji,1,jj1,-mji,qq,mj1)
+            ang15 = Wigner.Wigner3j(lli,1,ll1,0,0,0)
+            angvec1[qq+1] + ang11*ang12*ang13*ang14*ang15 #Shift for Python indexing
+    return angvec1
 
 def envalfunc(atom,nn,ll,jj):
     return GetAtomParams(atom,nn,ll,jj)[2]
