@@ -37,7 +37,7 @@ else
     jmaker = repmat([-0.5,0.5],1,length(lcands));
 end
 smalllvec = reshape(smalllvec,1,numel(smalllvec));
-smalljvec = smalllvec-jmaker;
+smalljvec = smalllvec+jmaker;
 lvec = repmat(smalllvec, 1, length(nvec)/length(smalllvec));
 jvec = repmat(smalljvec, 1, length(nvec)/length(smalljvec));
 truncspace1 = [nvec; lvec; jvec];

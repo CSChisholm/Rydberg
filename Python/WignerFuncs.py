@@ -31,7 +31,7 @@ def Wigner6jcheck(j1,j2,j3,J1,J2,J3):
         tfvec[kk] = np.floor(Triad[kk,:].sum())==(Triad[kk,:].sum())
     #Check triangle inequalities
     for kk in range(0,4):
-        if ((np.absolute(Triad[kk,1]-Triad[kk,2])<=Triad[kk,3]) and (Triad[kk,3]<=(Triad[kk,1]+Triad[kk,2]))):
+        if ((np.absolute(Triad[kk,0]-Triad[kk,1])<=Triad[kk,2]) and (Triad[kk,2]<=(Triad[kk,0]+Triad[kk,1]))):
             tfvec[kk+4] = 1
     tfsum = tfvec.sum()
     check = tfsum==8
@@ -63,7 +63,7 @@ Calculates { j1, j2 ,j3}  using Racah formula. See: Sobelman: Atomic Spectra and
     return Wigner
 
 def tfunction3j(tt,aa,bb,cc,alpha,beta):
-    xoft3j = np.multiply(np.multiply(np.multiply(np.multiply(np.multiply(np.factorial(tt),np.factorial(np.add(tt,cc-bb+alpha))),np.factorial(np.add(tt,cc-aa-beta))),np.factorial(np.subtract(aa+bb-cc,tt))),np.factorial(np.subtract(aa-alpha,tt))),np.factorial(np.subtract(bb+beta,tt)))
+    xoft3j = np.multiply(np.multiply(np.multiply(np.multiply(np.multiply(factorial(tt),factorial(np.add(tt,cc-bb+alpha))),factorial(np.add(tt,cc-aa-beta))),factorial(np.subtract(aa+bb-cc,tt))),factorial(np.subtract(aa-alpha,tt))),factorial(np.subtract(bb+beta,tt)))
     return xoft3j
 
 def Wigner3j(aa,bb,cc,alpha,beta,gamma):

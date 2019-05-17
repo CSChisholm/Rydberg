@@ -24,8 +24,8 @@ function BlockadeShift(atom,nn,ll,jj,mj)
   lcands = collect((ll-1):2:(ll+1))
   lcands = filter(lcands->lcands≥0,lcands)
   if lcands[1]==0
-    smalllvec = [0, rectpulse(lcands[2:end],2)]
-    jmaker = [0.5, repmat([-0.5, 0.5],1,length(lcands[2:end]))]
+    smalllvec = [0; rectpulse(lcands[2:end],2)]
+    jmaker = [0.5; repmat([-0.5, 0.5],1,length(lcands[2:end]))]
   else
     smalllvec = rectpulse(lcands,2)
     jmaker = repmat([-0.5, 0.5],1,length(lcands))

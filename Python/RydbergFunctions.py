@@ -137,22 +137,21 @@ def BlockadeShift(atom,nn,ll,jj,mj):
     singen = eneigval
     
     #Create set of allowable interacting state quantum numbers
-    nvec = mfuncs.rectpulse(np.arange(nn-ntol,nn+ntol+1),ll+2)
+    nvec = mfuncs.rectpulse(np.arange(nn-ntol,nn+ntol+1),ll+2).T.ravel()
     lcands = np.arange(ll-1,ll+2,2)
     lcands = lcands[lcands>=0]
     if (lcands[0]==0):
-        smalllvec = np.array([0] + np.reshape(mfuncs.rectpulse(lcands[2,(len(lcands.tolist())-1)],2),1,2*(len(lcands.tolist())-1)).tolist())
-        jmaker = np.array([0.5] + mfuncs.repmat(np.array([-0.5,0.5]),1,len(lcands.tolist())-1).tolist())
+        smalllvec = np.array([0] + mfuncs.rectpulse(lcands[1:len(lcands.tolist())],2).T.ravel().tolist())
+        jmaker = np.array([0.5] + mfuncs.repmat(np.array([-0.5,0.5]),1,len(lcands[1:len(lcands.tolist())])).ravel().tolist())
     else:
-        smalllvec = mfuncs.rectpulse(lcands,2)
-        jmaker = mfuncs.repmat(np.array([-0.5,0.5]),1,len(lcands.tolist()))
-#    smalllvec = np.reshape(smalllvec,1,np.size(smalllvec))
-    smalljvec = np.subtract(smalllvec,jmaker)
-    lvec = mfuncs.repmat(smalllvec,1,int(len(nvec.tolist())/len(smalllvec.tolist())))
-    jvec = mfuncs.repmat(smalljvec,1,int(len(nvec.tolist())/len(smalljvec.tolist())))
+        smalllvec = mfuncs.rectpulse(lcands,2).ravel()
+        jmaker = mfuncs.repmat(np.array([-0.5,0.5]),1,len(lcands.tolist())).ravel()
+    smalljvec = np.add(smalllvec,jmaker)
+    lvec = mfuncs.repmat(smalllvec,1,int(len(nvec.tolist())/len(smalllvec.tolist()))).ravel()
+    jvec = mfuncs.repmat(smalljvec,1,int(len(nvec.tolist())/len(smalljvec.tolist()))).ravel()
     truncspace1 = np.array([nvec.tolist(),lvec.tolist(),jvec.tolist()])
     pairs1 = mfuncs.combvec(truncspace1,truncspace1)
-    Sp1 = np.size(pairs1)
+    Sp1 = np.shape(pairs1)
     
     #Check which of these states satisfy the infinite separation energy defect condition and selection rules for j
     pindex = np.zeros(Sp1[1])
@@ -167,12 +166,16 @@ def BlockadeShift(atom,nn,ll,jj,mj):
         if ((np.absolute(defects[kk])<=entol) and (j1check==1) and (j2check==1)):
             pindex[kk] = 1
     pindex = np.where(pindex==1)[0]
-    pairs2 = np.array([pairs1[:,pindex].tolist(),defects[pindex].tolist()])
+    pairs2L = []
+    for row in pairs1:
+        pairs2L.append(row[pindex].tolist())
+    pairs2L.append(defects[pindex].tolist())
+    pairs2 = np.array(pairs2L)
     
-    matel2part = np.zeros(len(theta.tolist()),np.size(pairs2)[1]) #Vector to store matrix elements in
+    matel2part = np.zeros((len(theta.tolist()),np.shape(pairs2)[1])) #Vector to store matrix elements in
     
     #Call function to calculate matrix elements
-    for kk in range(0,np.size(pairs2)[1]):
+    for kk in range(0,np.shape(pairs2)[1]):
         matel2part[:,kk] = matrixel2p(atom,nn,ll,jj,mj,pairs2[0,kk],pairs2[1,kk],pairs2[2,kk],pairs2[3,kk],pairs2[4,kk],pairs2[5,kk],pairs2[6,kk],theta)
     
     #Compute the blockade shift in atomic units
@@ -187,7 +190,7 @@ def BlockadeShift(atom,nn,ll,jj,mj):
     #Convert units to GHz
     encon = (atomenergy/pceV)*1e-9 #Factor from atomic energy units to GHz
     blockadeshiftGHz = np.multiply(blockadeshiftau,encon)
-    blockadeshiftGHzmesh = np.multiply(bloackadeshiftaumesh,encon)
+    blockadeshiftGHzmesh = np.multiply(blockadeshiftaumesh,encon)
     
     #C6
     C_6val = float(blockadeshiftGHz[len(blockadeshiftGHz.tolist())-1]*(RRSI[len(RRSI.tolist())-1]**6)) #GHz/m^6
