@@ -136,6 +136,60 @@ def BlockadeShift(atom,nn,ll,jj,mj):
     singen = eneigval
     
     #Create set of allowable interacting state quantum numbers
+    nvec = mfuncs.rectpulse(np.arange(nn-ntol,nn+ntol+1),ll+2)
+    lcands = np.arange(ll-1,ll+2,2)
+    lcands = lcands[lcands>=0]
+    if (lcands[0]==0):
+        smalllvec = np.array([0] + np.reshape(mfuncs.rectpulse(lcands[2,(len(lcands.tolist())-1)],2),1,2*(len(lcands.tolist())-1)).tolist())
+        jmaker = np.array([0.5] + mfuncs.repmat(np.array([-0.5,0.5]),1,len(lcands.tolist())-1).tolist())
+    else:
+        smalllvec = mfuncs.rectpulse(lcands,2)
+        jmaker = mfuncs.repmat(np.array([-0.5,0.5]),1,len(lcands.tolist()))
+    smalllvec = np.reshape(smalllvec,1,np.size(smalllvec))
+    smalljvec = np.subtract(smalllvec,jmaker)
+    lvec = mfuncs.repmat(smalllvec,1,int(len(nvec.tolist())/len(smalllvec.tolist())))
+    jvec = mfuncs.repmat(smalljvec,1,int(len(nvec.tolist())/len(smalljvec.tolist())))
+    truncspace1 = np.array([nvec.tolist(),lvec.tolist(),jvec.tolist()])
+    pairs1 = mfuncs.combvec(truncspace1,truncspace1)
+    Sp1 = np.size(pairs1)
+    
+    #Check which of these states satisfy the infinite separation energy defect condition and selection rules for j
+    pindex = np.zeros(Sp1[1])
+    defects = np.zeros(Sp1[1])
+    
+    for kk in range(0,Sp1[1]):
+        energy1 = envalfunc(atom,pairs1[0,kk],pairs1[1,kk],pairs1[2,kk])
+        energy2 = envalfunc(atom,pairs1[3,kk],pairs1[4,kk],pairs1[5,kk])
+        defects[kk] = energy1 + energy2 - 2*singen #Energy defect
+        j1check = (pairs1[2,kk]==np.arange(jj-1,jj+1.5)).sum()
+        j2check = (pairs1[5,kk]==np.arange(jj-1,jj+1.5)).sum()
+        if ((np.absolute(defects[kk])<=entol) and (j1check==1) and (j2check==1)):
+            pindex[kk] = 1
+    pindex = np.where(pindex==1)[0]
+    pairs2 = np.array([pairs1[:,pindex].tolist(),defects[pindex].tolist()])
+    
+    matel2part = np.zeros(len(theta.tolist()),np.size(pairs2)[1]) #Vector to store matrix elements in
+    
+    #Call function to calculate matrix elements
+    for kk in range(0,np.size(pairs2)[1]):
+        matel2part[:,kk] = matrixel2p(atom,nn,ll,jj,mj,pairs2[0,kk],pairs2[1,kk],pairs2[2,kk],pairs2[3,kk],pairs2[4,kk],pairs2[5,kk],pairs2[6,kk],theta)
+    
+    #Compute the blockade shift in atomic units
+    summation = np.multiply(np.sum(matel2part,axis=1),-1)
+    kindex = np.where(np.absolute(summation)==np.absolute(summation).max())[0][0] #Find the index of maximum blockade shift
+    
+    blockadeshiftau = np.divide(summation[kindex],np.power(RR,6))
+    
+    RRmesh, summationmesh = np.meshgrid(RR,summation)
+    blockadeshiftaumesh = np.divide(summationmesh,np.power(RRmesh,6))
+    
+    #Convert units to GHz
+    encon = (atomenergy/pceV)*1e-9 #Factor from atomic energy units to GHz
+    blockadeshiftGHz = np.multiply(blockadeshiftau,encon)
+    blockadeshiftGHzmesh = np.multiply(bloackadeshiftaumesh,encon)
+    
+    #C6
+    C_6val = float(blockadeshiftGHz[len(blockadeshiftGHz.tolist())-1]*(RRSI[len(RRSI.tolist())-1]**6)) #GHz/m^6
     
     
     return RRSI, theta, blockadeshiftGHzmesh, C_6val
@@ -184,6 +238,40 @@ def radiel(atom,nn1,ll1,jj1,nn2,ll2,jj2):
     matrixelement = numervec.sum()
     
     return matrixelement
+
+def matrixel2p(atom,nni,lli,jji,mji,nn1,ll1,jj1,nn2,ll2,jj2,defect,theta):
+    '''Function for calculating the two particle matrix elements required for second order perturbation theory evaluation of the blockade shift'''
+    
+    sint = np.sin(theta) #For efficiency
+    cost = np.cos(theta)
+    sin2t = np.power(sint,2)
+    cos2t = np.power(cost,2)
+    
+    #first calculate angular factors as vectors [minus, zero, plus] for each single particle interaction state
+    
+    angvec1 = angcalc(lli,jji,mji,ll1,jj1)
+    angvec2 = angcalc(lli,jji,mji,ll2,jj2)
+    
+    #Radial matrix elements
+    matelem1i = radiel(atom,nni,lli,jji,nn1,ll1,jj1)
+    matelem2i = radiel(atom,nni,lli,jji,nn1,ll1,jj1)
+    
+    #Calculate terms in two particle matrix element using Wigner-Eckhart theorem (Pritchard, 2012), (Reinhard et al., 2007).
+    line1 = 0
+    line2 = 0
+    line3 = 0
+    
+    matrixelement = np.multiply(np.multiply(matelem1i,matelem2i),np.add(line1,np.add(line2,line3)))
+    
+    mel2p = np.divide(np.power(matrixelement,2),defect)
+    
+    return mel2p
+
+def angcalc():
+    return
+
+def envalfunc(atom,nn,ll,jj):
+    return GetAtomParams(atom,nn,ll,jj)[2]
 
 def GetAtomParams(atom,nn,ll,jj):
     if (atom=='87Rb'):

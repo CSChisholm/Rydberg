@@ -10,9 +10,17 @@ import numpy as np
 
 #Reverse engineered versions of inbuilt Matlab functions
 
+def repmat(xx,m,n):
+    tileArray = np.tile(xx,(m,n))
+    if (m==1):
+        outArray = tileArray[0]
+    else:
+        outArray = tileArray
+    return outArray
+
 def rectpulse(XX,Nsamp):
     '''Function to emulate Matlab's rectpulse'''
-    UU = np.tile(XX,(1,Nsamp))[0]
+    UU = repmat(XX,1,Nsamp)
     sX = np.shape(XX)
     YY = np.zeros(np.shape(UU))
     for kk in range(0,sX[0]):
