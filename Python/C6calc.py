@@ -24,4 +24,4 @@ for kk in range(0,len(nnc6.tolist())):
 
 np.savetxt('Data/'+atom+'C6dataS1_2.txt', np.array([nnc6, c6S1_2]).T,header='nnc6 c6S1_2')
 np.savetxt('Data/'+atom+'C6dataD3_2.txt', np.array([nnc6, c6D3_2]).T,header='nnc6 c6D3_2')
-np.savetxt('Data/'+atom+'C6datad5_2.txt', np.array([nnc6, c6D5_2]).T,header='nnc6 c6D5_2')
+np.savetxt('Data/'+atom+'C6dataD5_2.txt', np.array([nnc6, c6D5_2]).T,header='nnc6 c6D5_2')
