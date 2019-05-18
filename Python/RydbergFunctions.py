@@ -195,7 +195,6 @@ def BlockadeShift(atom,nn,ll,jj,mj):
     #C6
     C_6val = float(blockadeshiftGHz[len(blockadeshiftGHz.tolist())-1]*(RRSI[len(RRSI.tolist())-1]**6)) #GHz/m^6
     
-    
     return RRSI, theta, blockadeshiftGHzmesh, C_6val
 
 def matrix_elements(atom,nn1,ll1,jj1,nn2,ll2,jj2):
@@ -258,7 +257,7 @@ def matrixel2p(atom,nni,lli,jji,mji,nn1,ll1,jj1,nn2,ll2,jj2,defect,theta):
     
     #Radial matrix elements
     matelem1i = radiel(atom,nni,lli,jji,nn1,ll1,jj1)
-    matelem2i = radiel(atom,nni,lli,jji,nn1,ll1,jj1)
+    matelem2i = radiel(atom,nni,lli,jji,nn2,ll2,jj2)
     
     #Calculate terms in two particle matrix element using Wigner-Eckhart theorem (Pritchard, 2012), (Reinhard et al., 2007).
     line1 = np.add(np.add(np.multiply(angvec1[2],angvec2[2]),np.multiply(angvec1[0],angvec2[2])),np.multiply(np.multiply(angvec1[1],angvec2[1]),np.subtract(1,np.multiply(cos2t,3))))
@@ -282,7 +281,7 @@ def angcalc(lli,jji,mji,ll1,jj1):
             ang13 = Wigner.Wigner6j(jji,1,jj1,ll1,espin,lli)
             ang14 = Wigner.Wigner3j(jji,1,jj1,-mji,qq,mj1)
             ang15 = Wigner.Wigner3j(lli,1,ll1,0,0,0)
-            angvec1[qq+1] + ang11*ang12*ang13*ang14*ang15 #Shift for Python indexing
+            angvec1[qq+1] = ang11*ang12*ang13*ang14*ang15 #Shift for Python indexing
     return angvec1
 
 def envalfunc(atom,nn,ll,jj):

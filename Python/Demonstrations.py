@@ -134,5 +134,7 @@ denom1 = ratmJ.denominator
 plt.figure()
 plt.pcolormesh(np.multiply(RRSI,1e6),theta,np.multiply(blockadeshiftGHzmesh,1e3))
 plt.xlabel('$R\, (\mu\mathrm{m})$')
-plt.ylabel('$\theta\, (\mathrm{radians})$')
+plt.ylabel(r'$\theta\, (\mathrm{radians})$')
 plt.title('Calculated Rydberg blockade shift for |' + str(nn) + stringlookup[ll] + '_{' + str(numer) + '/' + str(denom) + '}, m_j = ' + str(numer1) + '/' + str(denom1) + '> state of Rb')
+plt.colorbar()
+plt.show()

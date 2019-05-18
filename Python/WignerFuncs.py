@@ -23,7 +23,7 @@ def fung(t, j1,j2,j3,J1,J2,J3):
 
 def Wigner6jcheck(j1,j2,j3,J1,J2,J3):
     '''Function to check Wigner-6j conditions'''
-    Triad = np.array([[j1,j2,j3],[j1,J2,J3],[J1,j2,J3],[J1,J2,J3]])
+    Triad = np.array([[j1,j2,j3],[j1,J2,J3],[J1,j2,J3],[J1,J2,j3]])
     tfvec = np.zeros(8)
     
     #Check integer condition
