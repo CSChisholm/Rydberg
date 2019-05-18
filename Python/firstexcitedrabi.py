@@ -24,8 +24,8 @@ def firstexcitedrabiRb(nn,ll,jj):
     
     #Define parameters relating to the decomposition of the hyperfine basis
     mjvec = np.array([0.5, 1.5])
-    ClebschGordg = np.multiply(1/np.sqrt(2),np.array([1, -1]))
-    matpart = np.array([0, 0])
+    ClebschGordg = np.divide(np.array([1, -1]),np.sqrt(2))
+    matpart = np.zeros(2)
     
     #Choose Rabi frequency
     RabifreqM = 1 #MHz
@@ -49,7 +49,7 @@ def firstexcitedrabiRb(nn,ll,jj):
         angular = angfac1*angfac2*angfac3*angfac4*angfac5
         matpart[kk] = matrixelement*angular*ClebschGordg[kk]
     
-    matrixfac = matpart.sum()
+    matrixfac = np.sum(matpart)
     
     #Calculate required intensity
     term01 = 1/(matrixfac**2)

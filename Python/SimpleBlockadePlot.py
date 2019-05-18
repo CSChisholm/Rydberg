@@ -20,9 +20,9 @@ plt.close("all")
 #Input information
 atom = '87Rb'
 nn = 50
-ll = 0
-jj = 0.5
-mj = 0.5
+ll = 2
+jj = 2.5
+mj = 2.5
 
 RRSI, theta, blockadeshiftGHzmesh, C_6val = Rydberg.BlockadeShift(atom,nn,ll,jj,mj)
 

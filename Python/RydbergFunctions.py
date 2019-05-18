@@ -144,7 +144,7 @@ def BlockadeShift(atom,nn,ll,jj,mj):
         smalllvec = np.array([0] + mfuncs.rectpulse(lcands[1:len(lcands.tolist())],2).T.ravel().tolist())
         jmaker = np.array([0.5] + mfuncs.repmat(np.array([-0.5,0.5]),1,len(lcands[1:len(lcands.tolist())])).ravel().tolist())
     else:
-        smalllvec = mfuncs.rectpulse(lcands,2).ravel()
+        smalllvec = mfuncs.rectpulse(lcands,2).T.ravel()
         jmaker = mfuncs.repmat(np.array([-0.5,0.5]),1,len(lcands.tolist())).ravel()
     smalljvec = np.add(smalllvec,jmaker)
     lvec = mfuncs.repmat(smalllvec,1,int(len(nvec.tolist())/len(smalllvec.tolist()))).ravel()

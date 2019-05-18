@@ -1,21 +1,21 @@
 #Script for plotting blockade shift results
 #26/07/2017
 
-using Plots, JLD, LaTeXStrings, MAT
+using Plots, JLD, LaTeXStrings
 pyplot()
 include("functions.jl")
 PyPlot.close("all")
 
 atom = "87Rb"
 nn = 50
-ll = 0
+ll = 1
 jj = 0.5
 mj = 0.5
 
 RRSI, θ, blockadeshiftmeshGHz, C_6val = BlockadeShift(atom,nn,ll,jj,mj)
 
 PyPlot.figure()
-surface(RRSI*1e6,θ,blockadeshiftmeshGHz*1e3)
+heatmap(RRSI*1e6,θ,blockadeshiftmeshGHz*1e3)
 plot!(xlabel=L"R\, (μ\mathrm{m})")
 plot!(ylabel=L"θ")
 plot!(zlabel=L"ΔW\, (\mathrm{MHz})")
