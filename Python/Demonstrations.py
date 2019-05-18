@@ -11,6 +11,7 @@ import numpy as np
 import RydbergFunctions as Rydberg
 from SIunits import *
 from fractions import Fraction
+from matplotlib import cm
 
 plt.close("all")
 
@@ -132,9 +133,38 @@ numer1 = ratmJ.numerator
 denom1 = ratmJ.denominator
 
 plt.figure()
-plt.pcolormesh(np.multiply(RRSI,1e6),theta,np.multiply(blockadeshiftGHzmesh,1e3))
+plt.pcolormesh(np.multiply(RRSI,1e6),theta,np.multiply(blockadeshiftGHzmesh,1e3),cmap=cm.inferno)
 plt.xlabel('$R\, (\mu\mathrm{m})$')
 plt.ylabel(r'$\theta\, (\mathrm{radians})$')
-plt.title('Calculated Rydberg blockade shift for |' + str(nn) + stringlookup[ll] + '_{' + str(numer) + '/' + str(denom) + '}, m_j = ' + str(numer1) + '/' + str(denom1) + '> state of Rb')
+plt.title('Calculated Rydberg blockade shift for\n |' + str(nn) + stringlookup[ll] + '_{' + str(numer) + '/' + str(denom) + '}, m_j = ' + str(numer1) + '/' + str(denom1) + '> state of ' + atom)
 plt.colorbar()
 plt.show()
+
+#C_6
+nnC6, c6S1_2 = np.loadtxt('Data/'+atom+'C6dataS1_2.txt', unpack=True)
+nnC6, c6D3_2 = np.loadtxt('Data/'+atom+'C6dataD3_2.txt', unpack=True)
+nnC6, c6D5_2 = np.loadtxt('Data/'+atom+'C6dataD5_2.txt', unpack=True)
+
+plt.figure()
+plt.plot(nnc6,abs(c6S1_2),fmt='o-');
+plt.xlabel('$n$')
+plt.ylabel('$|C_6|\, (\mathrm{GHz}\cdot\mu\mathrm{m}^6)$')
+plt.title('Calculated C_6 for $nS_{1/2}$'+atom)
+plt.xlim([nnc6[0],nnc6[len(nnc6.tolist())])
+plt.yscale('log')
+
+plt.figure()
+plt.plot(nnc6,np.absolute(c6D3_2),fmt='o-')
+plt.xlabel('$n$')
+plt.ylabel('$|C_6|\, (\mathrm{GHz}\cdot\mu\mathrm{m}^6)$')
+plt.title('Calculated C_6 for $nD_{3/2}$' + atom)
+plt.xlim([nnc6[0],nnc6[len(nnc6.tolist())])
+plt.yscale('log')
+
+plt.figure()
+plt.plot(nnc6,abs(c6D5_2),fmt='o-')
+plt.xlabel('$n$')
+plt.ylabel('$|C_6|\, (\mathrm{GHz}\cdot\mu\mathrm{m}^6)$')
+plt.title('Calculated C_6 for $nD_{5/2}$' + atom)
+plt.xlim([nnc6[0],nnc6[len(nnc6.tolist())])
+plt.yscale('log')

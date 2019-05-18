@@ -259,10 +259,10 @@ def matrixel2p(atom,nni,lli,jji,mji,nn1,ll1,jj1,nn2,ll2,jj2,defect,theta):
     matelem1i = radiel(atom,nni,lli,jji,nn1,ll1,jj1)
     matelem2i = radiel(atom,nni,lli,jji,nn2,ll2,jj2)
     
-    #Calculate terms in two particle matrix element using Wigner-Eckhart theorem (Pritchard, 2012), (Reinhard et al., 2007).
-    line1 = np.add(np.add(np.multiply(angvec1[2],angvec2[2]),np.multiply(angvec1[0],angvec2[2])),np.multiply(np.multiply(angvec1[1],angvec2[1]),np.subtract(1,np.multiply(cos2t,3))))
-    line2 = np.multiply(np.add(np.add(np.multiply(angvec1[2],angvec2[2]),np.multiply(angvec1[2],angvec2[0])),np.add(np.multiply(angvec1[0],angvec2[2]),np.multiply(angvec1[0],angvec2[0]))),np.multiply(sin2t,-3/2))
-    line3 = np.multiply(np.add(np.add(np.multiply(angvec1[2],angvec2[1]),np.multiply(angvec1[0],angvec2[1])),np.add(np.multiply(angvec1[1],angvec2[2]),np.multiply(angvec1[1],angvec2[0]))),np.multiply(np.multiply(sint,cost),-3/np.sqrt(2)))
+    #Calculate terms in two particle matrix element using Wigner-Eckhart theorem (Pritchard, 2012), (Reinhard et al., 2007).        
+    line1 = np.add(angvec1[2]*angvec2[2] + angvec1[0]*angvec2[2],np.multiply(angvec1[1]*angvec2[1],np.subtract(1,np.multiply(3,cos2t))))
+    line2 = np.multiply(np.multiply(-3/2,sin2t),angvec1[2]*angvec2[2]+angvec1[2]*angvec2[0] + angvec1[0]*angvec2[2] + angvec1[0]*angvec2[0])
+    line3 = np.multiply(-(3/np.sqrt(2)),np.multiply(np.multiply(sint,cost),angvec1[2]*angvec2[1] + angvec1[0]*angvec2[1] + angvec1[1]*angvec2[2] + angvec1[1]*angvec2[0]))
     
     matrixelement = np.multiply(np.multiply(matelem1i,matelem2i),np.add(line1,np.add(line2,line3)))
     

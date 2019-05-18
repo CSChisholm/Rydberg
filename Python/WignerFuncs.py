@@ -72,7 +72,7 @@ def Wigner3j(aa,bb,cc,alpha,beta,gamma):
     triang = triangle_coeff(aa, bb, cc)
     
     #Second term
-    sqrtterm = np.sqrt(factorial(aa+alpha)*factorial(aa-alpha)*factorial(bb+beta)+factorial(bb-beta)*factorial(cc+gamma)*factorial(cc-gamma))
+    sqrtterm = np.sqrt(factorial(aa+alpha)*factorial(aa-alpha)*factorial(bb+beta)*factorial(bb-beta)*factorial(cc+gamma)*factorial(cc-gamma))
     
     #Finding the range of summation in the Racah formula
     tmin = [bb-cc-alpha,aa+beta-cc,0]
@@ -88,3 +88,16 @@ def Wigner3j(aa,bb,cc,alpha,beta,gamma):
     Wigner = ((-1)**(aa-bb-gamma))*np.sqrt(triang)*sqrtterm*(sumscalar.sum())
     
     return Wigner
+
+def ClebschGord(jj1,jj2,JJ,mm1,mm2,MM):
+    '''Function to calculate Clebsch-Gordan coeficients'''
+    ClebschGord = ((-1)**(jj1-jj2+MM))*np.sqrt(2*JJ+1)*Wigner3j(jj1,jj2,JJ,mm1,mm2,-MM)
+    return ClebschGord
+
+def krondelt(ii,jj):
+    '''Kronecker delta function'''
+    if (ii==jj):
+        krondelt = 1;
+    else:
+        krondelt = 0;
+    return krondelt
