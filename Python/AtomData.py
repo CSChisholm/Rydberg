@@ -9,7 +9,7 @@ Created on Thu May 16 10:52:03 2019
 #Atom specific parameters
 
 import numpy as np
-from SIunits import *
+import SIunits as SIunits
 
 def Rb87Numbers(nn,ll,jj):
     #Numbers for 87Rb
@@ -85,21 +85,21 @@ def Rb87Numbers(nn,ll,jj):
     
     #Get energy eigen value                         
     if ((nn==5) and (ll==0)):
-        eneigval = (n5l0j1_2en-ionlim)/atomenergy
+        eneigval = (n5l0j1_2en-ionlim)/SIunits.SIunits.atomenergy
     elif ((nn==5) and (ll==1) and (jj==1/2)):
-        eneigval = (D1trans-ionlim)/atomenergy
+        eneigval = (D1trans-ionlim)/SIunits.SIunits.atomenergy
     elif ((nn==5) and (ll==1) and (jj==3/2)):
-        eneigval = (D2trans-ionlim)/atomenergy
+        eneigval = (D2trans-ionlim)/SIunits.atomenergy
     elif ((nn==4) and (ll==2) and(jj==5/2)):
-        eneigval = (n4l2j5_2en-ionlim)/atomenergy
+        eneigval = (n4l2j5_2en-ionlim)/SIunits.atomenergy
     elif ((nn==4) and (ll==2) and (jj==3/2)):
-        eneigval = (n4l2j3_2en-ionlim)/atomenergy
+        eneigval = (n4l2j3_2en-ionlim)/SIunits.atomenergy
     elif ((nn==6) and (ll==0)):
-        eneigval = (n6l0j1_2en-ionlim)/atomenergy
+        eneigval = (n6l0j1_2en-ionlim)/SIunits.atomenergy
     elif ((nn==6) and (ll==1) and (jj==1/2)):
-        eneigval = (n6l1j1_2en-ionlim)/atomenergy
+        eneigval = (n6l1j1_2en-ionlim)/SIunits.atomenergy
     elif ((nn==6) and (ll==1) and (jj==3/2)):
-        eneigval = (n6l1j3_2en-ionlim)/atomenergy
+        eneigval = (n6l1j3_2en-ionlim)/SIunits.atomenergy
     else:
        eneigval = -Ry/(2*((nn-delta_nlj)**2))
        

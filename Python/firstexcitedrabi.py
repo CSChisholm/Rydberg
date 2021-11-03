@@ -11,7 +11,7 @@ Created on Sat May 18 16:36:53 2019
 import numpy as np
 import RydbergFunctions as Rydberg
 import WignerFuncs as Wigner
-from SIunits import *
+import SIunits as SIunits
 
 def firstexcitedrabiRb(nn,ll,jj):
     
@@ -53,7 +53,7 @@ def firstexcitedrabiRb(nn,ll,jj):
     
     #Calculate required intensity
     term01 = 1/(matrixfac**2)
-    term02 = vacpmtvty*(rpcJ**2)*lightc/(2*(eleccharge**2)*(bohrrad**2))
+    term02 = SIunits.vacpmtvty*(SIunits.rpcJ**2)*SIunits.lightc/(2*(SIunits.eleccharge**2)*(SIunits.bohrrad**2))
     intensity = term01*term02*(Rabifreq**2) #Intensity in W/m^2
     
     power = (np.pi/2)*intensity*((beamwaist*1e-6)**2)

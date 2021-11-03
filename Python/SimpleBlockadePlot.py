@@ -11,7 +11,6 @@ Created on Sat May 18 16:27:43 2019
 import matplotlib.pyplot as plt
 import numpy as np
 import RydbergFunctions as Rydberg
-from SIunits import *
 from fractions import Fraction
 from matplotlib import cm
 

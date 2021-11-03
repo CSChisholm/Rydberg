@@ -9,7 +9,7 @@ Created on Wed May 15 17:19:48 2019
 #Functions for Rydberg library
 
 import numpy as np
-from SIunits import *
+import SIunits as SIunits
 import AtomData as atoms
 import MatlabHacks as mfuncs
 import WignerFuncs as Wigner
@@ -31,7 +31,7 @@ def numerovfunc(atom,nn,ll,jj):
     
     LdotS = (jj*(jj+1)-ll*(ll+1)-spin*(spin+1))/2 #Spin-orbit coupling
     
-    spinorbitpotential = np.divide((finestrucconst**2)*LdotS,np.multiply(np.power(rr,3),2)) #Fine structure splitting
+    spinorbitpotential = np.divide((SIunits.finestrucconst**2)*LdotS,np.multiply(np.power(rr,3),2)) #Fine structure splitting
     
     radialcharge = np.add(1,np.subtract(np.multiply(np.exp(np.multiply(rr,-a_1)),(ZZ-1)),np.multiply(rr,np.multiply(np.exp(np.multiply(rr,-a_2)),np.add(np.multiply(rr,a_4),a_3))))) #Effective nuclear charge
     
@@ -93,11 +93,11 @@ def Radiative_Lifetimes(atom,nn,ll,jj):
         matrixelementSI = matrix_elements(atom,nn,ll,jj,loadparam[qq,0],loadparam[qq,1],loadparam[qq,2])[1]
         #Compute energies
         enlow = stateenvec[qq]-ionlim #Energy of lower state in eV
-        eneigvaleV = eneigval*atomenergy #Energy of state |n,l,j> in eV
+        eneigvaleV = eneigval*SIunits.atomenergy #Energy of state |n,l,j> in eV
         
         #Perform calculation
-        omega = np.absolute((eneigvaleV-enlow)/rpceV) #Angular frequency of transimission
-        term1 = (omega**3)/(3*np.pi*vacpmtvty*rpcJ*(lightc**3)) #splitting terms to make reading easier
+        omega = np.absolute((eneigvaleV-enlow)/SIunits.rpceV) #Angular frequency of transimission
+        term1 = (omega**3)/(3*np.pi*SIunits.vacpmtvty*SIunits.rpcJ*(SIunits.lightc**3)) #splitting terms to make reading easier
         term2 = (2*jj+1)/(2*loadparam[qq,2]+1)
         Rdecayratevec[qq] = term1*term2*(matrixelementSI**2) #Radiative decay rate
         
@@ -118,7 +118,7 @@ def Radiative_Lifetimes(atom,nn,ll,jj):
 def BlockadeShift(atom,nn,ll,jj,mj):
     '''Function for calculating Rydberg blockade shifts.'''
     
-    pceV = 2*np.pi*rpceV #Planck's constant in eV
+    pceV = 2*np.pi*SIunits.rpceV #Planck's constant in eV
     
     if (atom=='87Rb'):
         ZZ, spin, eneigval, alpha_c, a_1, a_2, a_3, a_4, r_c, ionlim, delta_nlj = GetAtomParams(atom,nn,ll,jj)
@@ -126,11 +126,11 @@ def BlockadeShift(atom,nn,ll,jj,mj):
     #Create ranges for theta and R (R in atomic units)
     theta = np.arange(0,np.pi/2+0.005,0.01)
     RRSI = np.multiply(np.arange(4,10.0005,0.001),1e-6)
-    RR = np.divide(RRSI,bohrrad)
+    RR = np.divide(RRSI,SIunits.bohrrad)
     
     #Set defect threshold
     defectmax = 100e9 #Maximum energy defect in Hz
-    entol = defectmax*pceV/atomenergy #Converted to atomic units
+    entol = defectmax*pceV/SIunits.atomenergy #Converted to atomic units
     ntol = 4 #Maximum change in n
     
     #Determine the single particle state energy
@@ -188,7 +188,7 @@ def BlockadeShift(atom,nn,ll,jj,mj):
     blockadeshiftaumesh = np.divide(summationmesh,np.power(RRmesh,6))
     
     #Convert units to GHz
-    encon = (atomenergy/pceV)*1e-9 #Factor from atomic energy units to GHz
+    encon = (SIunits.atomenergy/pceV)*1e-9 #Factor from atomic energy units to GHz
     blockadeshiftGHz = np.multiply(blockadeshiftau,encon)
     blockadeshiftGHzmesh = np.multiply(blockadeshiftaumesh,encon)
     
@@ -200,7 +200,7 @@ def BlockadeShift(atom,nn,ll,jj,mj):
 def matrix_elements(atom,nn1,ll1,jj1,nn2,ll2,jj2):
     '''Function for calculating dipole matrix elements based on results from numerovfunc()'''
     matrixelement = radiel(atom,nn1,ll1,jj1,nn2,ll2,jj2)
-    matrixelementSI = matrixelement*bohrrad*eleccharge
+    matrixelementSI = matrixelement*SIunits.bohrrad*SIunits.eleccharge
     
     return matrixelement, matrixelementSI
 
@@ -276,9 +276,9 @@ def angcalc(lli,jji,mji,ll1,jj1):
         mj1 = mji - qq
         tf1 = (mj1==np.arange(-jj1,jj1+0.5)).sum()
         if (tf1==1):
-            ang11 = (-1)**(jji-mji+espin+jj1+1)
+            ang11 = (-1)**(jji-mji+SIunits.espin+jj1+1)
             ang12 = np.sqrt((2*jji+1)*(2*jj1+1)*(2*lli+1)*(2*ll1+1))
-            ang13 = Wigner.Wigner6j(jji,1,jj1,ll1,espin,lli)
+            ang13 = Wigner.Wigner6j(jji,1,jj1,ll1,SIunits.espin,lli)
             ang14 = Wigner.Wigner3j(jji,1,jj1,-mji,qq,mj1)
             ang15 = Wigner.Wigner3j(lli,1,ll1,0,0,0)
             angvec1[qq+1] = ang11*ang12*ang13*ang14*ang15 #Shift for Python indexing

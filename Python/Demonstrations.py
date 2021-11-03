@@ -9,7 +9,6 @@ Created on Wed May 15 19:56:18 2019
 import matplotlib.pyplot as plt
 import numpy as np
 import RydbergFunctions as Rydberg
-from SIunits import *
 from fractions import Fraction
 from matplotlib import cm
 
