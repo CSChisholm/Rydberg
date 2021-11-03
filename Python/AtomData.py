@@ -85,9 +85,9 @@ def Rb87Numbers(nn,ll,jj):
     
     #Get energy eigen value                         
     if ((nn==5) and (ll==0)):
-        eneigval = (n5l0j1_2en-ionlim)/SIunits.SIunits.atomenergy
+        eneigval = (n5l0j1_2en-ionlim)/SIunits.atomenergy
     elif ((nn==5) and (ll==1) and (jj==1/2)):
-        eneigval = (D1trans-ionlim)/SIunits.SIunits.atomenergy
+        eneigval = (D1trans-ionlim)/SIunits.atomenergy
     elif ((nn==5) and (ll==1) and (jj==3/2)):
         eneigval = (D2trans-ionlim)/SIunits.atomenergy
     elif ((nn==4) and (ll==2) and(jj==5/2)):
