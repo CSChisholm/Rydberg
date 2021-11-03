@@ -209,12 +209,12 @@ def radiel(atom,nn1,ll1,jj1,nn2,ll2,jj2):
     #first load radial wavefunctions for calculating the radial part of the matrix element
     try:
         rscale1, radial1 = np.loadtxt(filenamemake(atom,nn1,ll1,jj1), unpack=True)
-    except FileNotFoundError:
+    except (FileNotFoundError,OSError):
         radial1, rscale1 = numerovfunc(atom,nn1,ll1,jj1)
     
     try:
         rscale2, radial2 = np.loadtxt(filenamemake(atom,nn2,ll2,jj2), unpack=True)
-    except FileNotFoundError:
+    except (FileNotFoundError,OSError):
         radial2, rscale2 = numerovfunc(atom,nn2,ll2,jj2)
     
     #Calculate the radial matrix element
