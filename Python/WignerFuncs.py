@@ -9,7 +9,16 @@ Created on Fri May 17 13:35:04 2019
 import numpy as np
 
 def factorial(a):
-    return np.math.factorial(a)
+    if isinstance(a,list):
+        return [fac(int(x)) for x in a]
+    else:
+        return fac(int(a))
+
+def fac(nn):
+    if (nn in [0,1]):
+        return 1
+    else:
+        return nn*fac(nn-1)
 
 def triangle_coeff(a,b,c):
     '''Calculateing triange coefficients for Angular momenta.'''
