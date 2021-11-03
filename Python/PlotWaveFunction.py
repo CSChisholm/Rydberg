@@ -16,7 +16,7 @@ plt.close("all")
 
 #Input information
 atom = '87Rb'
-nn = 5
+nn = 50
 ll = 0
 jj = 0.5
 
@@ -30,7 +30,7 @@ normY_sol, rr = Rydberg.numerovfunc(atom,nn,ll,jj)
 plotscale = np.sqrt(rr)
 probamp = np.power(np.multiply(normY_sol,plotscale),2)
 
-tString = atom + ' radial wavefunction n = ' + str(nn) + ', l = ' + str(ll) + ', j = ' + str(jj)
+tString = f'{atom} radial wavefunction n = {nn}, l = {ll}, j = {jj}'
 
 plt.figure()
 plt.plot(plotscale,normY_sol)
@@ -39,7 +39,6 @@ if (nn>20):
 plt.xlabel('$(r/a_0)^{1/2}$')
 plt.ylabel('$r^{1/2}R(r)\, (a_0^{-1})$')
 plt.title(tString)
-plt.show()
 
 plt.figure()
 plt.plot(rr,probamp)

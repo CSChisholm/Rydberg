@@ -34,9 +34,9 @@ numer1 = ratmJ.numerator
 denom1 = ratmJ.denominator
 
 plt.figure()
-plt.pcolormesh(np.multiply(RRSI,1e6),theta,np.multiply(blockadeshiftGHzmesh,1e3),cmap=cm.inferno)
+plt.pcolormesh(np.multiply(RRSI,1e6),theta,np.multiply(blockadeshiftGHzmesh,1e3),cmap=cm.inferno,shading='auto')
 plt.xlabel('$R\, (\mu\mathrm{m})$')
 plt.ylabel(r'$\theta\, (\mathrm{radians})$')
-plt.title('Calculated Rydberg blockade shift for\n |' + str(nn) + stringlookup[ll] + '_{' + str(numer) + '/' + str(denom) + '}, m_j = ' + str(numer1) + '/' + str(denom1) + '> state of ' + atom)
+plt.title(f'Calculated Rydberg blockade shift for\n $|{nn}{stringlookup[ll]}_{{{numer}/{denom}}}, m_j = {numer1}/{denom1}\\rangle$ state of {atom}')
 plt.colorbar()
 plt.show()

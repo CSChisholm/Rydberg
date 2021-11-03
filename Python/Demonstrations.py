@@ -31,7 +31,7 @@ normY_sol, rr = Rydberg.numerovfunc(atom,nn,ll,jj)
 plotscale = np.sqrt(rr)
 probamp = np.power(np.multiply(normY_sol,plotscale),2)
 
-tString = atom + ' radial wavefunction |n,l,j> = |' + str(nn) + ',' + str(ll) + ',' + str(jj) + '>'
+tString = f'{atom} radial wavefunction $|n,l,j\\rangle$ = $|{nn},{ll},{jj}\\rangle$'
 
 plt.figure()
 plt.plot(plotscale,normY_sol)
@@ -40,7 +40,6 @@ if (nn>20):
 plt.xlabel('$(r/a_0)^{1/2}$')
 plt.ylabel('$r^{1/2}R(r)\, (a_0^{-1})$')
 plt.title(tString)
-plt.show()
 
 plt.figure()
 plt.plot(rr,probamp)
@@ -49,8 +48,6 @@ if (nn>20):
 plt.xlabel('$r/a_0$')
 plt.ylabel('$|rR(r)|.^2\, (a_0^{-1})$')
 plt.title(tString)
-plt.show()
-
 #Compare groundstate to self-consistent field method
 plotscale2, sqrtrR = np.loadtxt('Data/SCFcalc.txt', unpack=True)
 normY_solg, rrg = Rydberg.numerovfunc('87Rb',5,0,0.5)
@@ -99,7 +96,6 @@ plt.title('Plot of calculated and experimental lifetimes for $nS_{1/2}$ states')
 plt.ylabel(r'$\tau\, (\mu\mathrm{s})$')
 plt.xlabel('$n$')
 plt.legend()
-plt.show()
 
 plt.figure()
 plt.scatter(nnp,calcp,marker='x',label='Calculated')
@@ -108,7 +104,6 @@ plt.title('Plot of calculated and experimental lifetimes for $nP_{3/2}$ states')
 plt.ylabel(r'$\tau\, (\mu\mathrm{s})$')
 plt.xlabel('$n$')
 plt.legend()
-plt.show()
 
 plt.figure()
 plt.scatter(nnd,calcd,marker='x',label='Calculated')
@@ -117,7 +112,6 @@ plt.title('Plot of calculated and experimental lifetimes for $nD_{5/2}$ states')
 plt.ylabel(r'$\tau\, (\mu\mathrm{s})$')
 plt.xlabel('$n$')
 plt.legend()
-plt.show()
 
 #Blockade shift
 
@@ -132,12 +126,11 @@ numer1 = ratmJ.numerator
 denom1 = ratmJ.denominator
 
 plt.figure()
-plt.pcolormesh(np.multiply(RRSI,1e6),theta,np.multiply(blockadeshiftGHzmesh,1e3),cmap=cm.inferno)
+plt.pcolormesh(np.multiply(RRSI,1e6),theta,np.multiply(blockadeshiftGHzmesh,1e3),cmap=cm.inferno,shading='auto')
 plt.xlabel('$R\, (\mu\mathrm{m})$')
 plt.ylabel(r'$\theta\, (\mathrm{radians})$')
-plt.title('Calculated Rydberg blockade shift for\n |' + str(nn) + stringlookup[ll] + '_{' + str(numer) + '/' + str(denom) + '}, m_j = ' + str(numer1) + '/' + str(denom1) + '> state of ' + atom)
+plt.title(f'Calculated Rydberg blockade shift for\n $|{nn}{stringlookup[ll]}_{{{numer}/{denom}}}, m_j = {numer1}/{denom1}\\rangle$ state of {atom}')
 plt.colorbar()
-plt.show()
 
 #C_6
 nnc6, c6S1_2 = np.loadtxt('Data/'+atom+'C6dataS1_2.txt', unpack=True)
@@ -156,7 +149,7 @@ plt.figure()
 plt.plot(nnc6,np.multiply(np.absolute(c6D3_2),1e36),'o-')
 plt.xlabel('$n$')
 plt.ylabel('$|C_6|\, (\mathrm{GHz}\cdot\mu\mathrm{m}^6)$')
-plt.title('Calculated C_6 for $nD_{3/2}$ ' + atom)
+plt.title(f'Calculated C_6 for $nD_{{3/2}}$ {atom}')
 plt.xlim([nnc6[0],nnc6[len(nnc6.tolist())-1]])
 plt.yscale('log')
 
@@ -164,6 +157,7 @@ plt.figure()
 plt.plot(nnc6,np.multiply(np.absolute(c6D5_2),1e36),'o-')
 plt.xlabel('$n$')
 plt.ylabel('$|C_6|\, (\mathrm{GHz}\cdot\mu\mathrm{m}^6)$')
-plt.title('Calculated C_6 for $nD_{5/2}$ ' + atom)
+plt.title(f'Calculated C_6 for $nD_{{5/2}}$ {atom}')
 plt.xlim([nnc6[0],nnc6[len(nnc6.tolist())-1]])
 plt.yscale('log')
+plt.show()
