@@ -75,8 +75,18 @@ def tfunction3j(tt,aa,bb,cc,alpha,beta):
     xoft3j = np.multiply(np.multiply(np.multiply(np.multiply(np.multiply(factorial(tt),factorial(np.add(tt,cc-bb+alpha))),factorial(np.add(tt,cc-aa-beta))),factorial(np.subtract(aa+bb-cc,tt))),factorial(np.subtract(aa-alpha,tt))),factorial(np.subtract(bb+beta,tt)))
     return xoft3j
 
+def Wigner3jcheck(j1,j2,j3,m1,m2,m3):
+    '''Check conditions for Wigner3j'''
+    check1 = (m1 in np.linspace(-j1,j1,int(2*j1+1))) and (m2 in np.linspace(-j2,j2,int(2*j2+1))) and (m3 in np.linspace(-j3,j3,int(2*j3+1)))
+    check2 = m1+m2==-m3
+    check3 = abs(j1-j1)<=j3<=j1+j2
+    check4 = not((j1+j2+j3)%1)
+    return (check1+check2+check3+check4)==4
+
 def Wigner3j(aa,bb,cc,alpha,beta,gamma):
     '''Wigner 3j-symbol calculator'''
+    if not(Wigner3jcheck(aa,bb,cc,alpha,beta,gamma)):
+        return 0
     #Find triangle coefficient using A. B. Deb (2007) script
     triang = triangle_coeff(aa, bb, cc)
     
