@@ -53,23 +53,22 @@ Originally written by Amita B Deb, Clarendon Lab. 2007 (Matlab).
 Calculates { j1, j2 ,j3}  using Racah formula. See: Sobelman: Atomic Spectra and Radiative Transitions.
               J1  J2  J3'''
     check = Wigner6jcheck(j1,j2,j3,J1,J2,J3)
-    if (check):
-        #Finding Triangular coefficients
-        tri1 = triangle_coeff(j1,j2,j3)
-        tri2 = triangle_coeff(j1,J2,J3)
-        tri3 = triangle_coeff(J1,j2,J3)
-        tri4 = triangle_coeff(J1,J2,j3)
-        #Finding the range of summation in Racah formula
-        a = [j1+j2+j3,j1+J2+J3,J1+j2+J3,J1+J2+j3]
-        rangei = max(a)
-        k = [j1+j2+J1+J2,j2+j3+J2+J3,j3+j1+J3+J1]
-        rangef = min(k)
-        
-        tt = np.arange(rangei,rangef+0.5)
-        Wigner = np.multiply(np.sqrt(tri1*tri2*tri3*tri4),np.multiply(np.power(-1,tt),np.divide(factorial(np.add(tt,1)),fung(tt,j1,j2,j3,J1,J2,J3))))
-    else:
-        Wigner = 0
-    return Wigner
+    if not check:
+        return 0
+    #Finding Triangular coefficients
+    tri1 = triangle_coeff(j1,j2,j3)
+    tri2 = triangle_coeff(j1,J2,J3)
+    tri3 = triangle_coeff(J1,j2,J3)
+    tri4 = triangle_coeff(J1,J2,j3)
+    #Finding the range of summation in Racah formula
+    a = [j1+j2+j3,j1+J2+J3,J1+j2+J3,J1+J2+j3]
+    rangei = max(a)
+    k = [j1+j2+J1+J2,j2+j3+J2+J3,j3+j1+J3+J1]
+    rangef = min(k)
+    
+    tt = np.arange(rangei,rangef+0.5)
+    Wigner = np.multiply(np.sqrt(tri1*tri2*tri3*tri4),np.multiply(np.power(-1,tt),np.divide(factorial(np.add(tt,1)),fung(tt,j1,j2,j3,J1,J2,J3))))
+    return Wigner.sum()
 
 def tfunction3j(tt,aa,bb,cc,alpha,beta):
     xoft3j = np.multiply(np.multiply(np.multiply(np.multiply(np.multiply(factorial(tt),factorial(np.add(tt,cc-bb+alpha))),factorial(np.add(tt,cc-aa-beta))),factorial(np.subtract(aa+bb-cc,tt))),factorial(np.subtract(aa-alpha,tt))),factorial(np.subtract(bb+beta,tt)))
